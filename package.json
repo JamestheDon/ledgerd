@@ -1,6 +1,8 @@
 {
+  "author": "James Hawkins",
+  "license": "MIT",
   "name": "ledgerd",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "bitcoin core node tools.",
   "main": "index.js",
   "scripts": {
@@ -10,19 +12,18 @@
     "type": "git",
     "url": "git+ssh://git@github.com/JamestheDon/ledgerd.git"
   },
+  "bin": {
+    "ledgerd": "./index.js"
+  },
   "keywords": [
     "bitcoin",
     "core",
     "bitcoind",
     "bitcoin-cli"
   ],
-  "author": "James Hawkins",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/JamestheDon/ledgerd/issues"
   },
   "homepage": "https://github.com/JamestheDon/ledgerd#readme",
-  "devDependencies": {
-    "chalk": "^4.1.1"
-  }
+  "devDependencies": {}
 }
