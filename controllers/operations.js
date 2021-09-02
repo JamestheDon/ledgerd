@@ -1,6 +1,6 @@
 const cp = require('child_process');
 const fs = require('fs');
-const { stdout, stderr } = require('process');
+
 // const spawn = require('child_process').spawn;
 
 /**
@@ -59,7 +59,7 @@ const searchForPkg = () => {
 const analyze = () => {
             try {
     tail = cp.spawn('tail',   ["-f", "/Volumes/Shell1/debug.log"], {encoding: 'utf-8', stdio: 'pipe'});
-    const grep = cp.spawn('grep', ["-m", "1",'progress=']);
+    const grep = cp.spawn('grep', ["-m", "1",'progress='], );
     
     // errno: -32 "write EPIPE"
     // piping `tail` | `grep` is causing potential race conditions;
