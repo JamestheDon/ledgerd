@@ -1,7 +1,6 @@
 "use strict";
 const cp = require("child_process");
 const fs = require("fs");
-const { version } = require("process");
 
 const reset = "\x1b[0m";
 const cyan = "\x1b[36m";
@@ -21,9 +20,12 @@ const getBitVer = () => {
   const regeex = ".......-....-d.d.d";
   //.......\-....\-\(\d\+\.\)\?\(\d+\.\)\?\(\*|\d\+\)$
   try {
+      // Use sys commands to GET by `curl` current Bitcoin Core 
+      // versions avail for download. 
     const curl = cp.spawn("curl", ["https://bitcoincore.org/bin/"], {
       encoding: "utf-8",
     });
+    // Piping of `curl` response to `grep` to seach for keyword 'bitcoin-core'
     const grep = cp.spawn("grep", ["bitcoin-core"], { encoding: "utf-8" });
 
     //  Pipe curl data to grep.
