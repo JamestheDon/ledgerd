@@ -1,39 +1,36 @@
 "use strict";
 const cp = require("child_process");
 const fs = require("fs");
-const storage = require('node-persist');
+
 const reset = "\x1b[0m";
 const cyan = "\x1b[36m";
 
 /**
  *  @desc this module uses sys cmds `curl` & `grep` to retreive \n
  *        bitcoin core binary releases from bitcoincore.org and Write found versions to database.
- * 
+ *
  *        Compare versions to btc-core thats installed to found versions.
  *  @todo: Map though versions.json to determine most recent version.
  *  @todo: return last few versions.
  *  @todo: create new `curl` target url for downloading binary pkgs for updates.
- * 
+ *
  * https://bitcoincore.org/bin/
  * https://bitcoin.org/bin/
- * 
+ *
  */
 
 const getBitVer = () => {
   const regeex = ".......-....-d.d.d";
   //.......\-....\-\(\d\+\.\)\?\(\d+\.\)\?\(\*|\d\+\)$
   try {
-      // Use sys commands to GET by `curl` current Bitcoin Core 
-      // versions avail for download. 
+    // curl Bitcoin COre versions avail for download.
     const curl = cp.spawn("curl", ["https://bitcoincore.org/bin/"], {
       encoding: "utf-8",
     });
-    // Piping of `curl` response to `grep` to seach for keyword 'bitcoin-core'
+    // `grep` for keyword 'bitcoin-core'
     const grep = cp.spawn("grep", ["bitcoin-core"], { encoding: "utf-8" });
-
-    //  Pipe curl data to grep.
+    //  Piping of `curl` to `grep`
     curl.stdout.pipe(grep.stdin);
-
     //  outputs to terminal
     //  grep.stdout.pipe(process.stdin);
 
@@ -52,30 +49,62 @@ const getBitVer = () => {
     });
 
     let buffer = "";
+
     grep.stdout.on("data", (data) => {
       // take care of empty strings.
       buffer += data;
       const isoString = buffer.split("\n");
-      let versions = "";
-      const final = []
+      //   let versions = "";
+      const final = [];
       isoString.map((item, i) => {
         const version = {
-          ver: null
+          ver: "",
+        };
+
+        if (item.slice(28, 29) === ".") {
+      version.ver = item.slice(9, 28);
+         final.push(version)
+        } 
+         
+
+        if (item.slice(28, 29) === '"') {
+          console.log('what is going on?', item.slice(9, 27))
+         version.ver = item.slice(9, 27);
+         final.push(version)
+        } 
+        // else {
+        //   final.push(version);
+        // }
+
+        if (item.slice(28, 29) === ">") {
+         version.ver = item.slice(9, 26);
+          final.push(version)
+        } 
+        
+        if (final.length <= 4) {
+          version.ver = item.slice(9, 28);
+          final.push(version)
         }
-       // console.log(`${cyan}Found versions:${reset}`, item.slice(9, 28));
-       version.ver = item.slice(9, 28) + ",";
-        versions += item.slice(9, 28) + ",";
-        final.push(version)
+
+        // else {
+        //   version.ver = item.slice(9, 29);
+        //   final.push(version);
+        // }
+
+        // versions += item.slice(9, 28) + ",";
+        // final.push(version);
       });
-      const content = versions.split(",");
-    for (let i = final.length; i--;) {
-      console.log('this', final[i])
-    }
-   
-     console.log(`${cyan}FINALLY${reset}: ${final.length}` )
+
+      // const content = versions.split(",");
+
+      for (let i = final.length; i--; ) {
+        console.log("this", final[i]);
+      }
+
+      console.log(`${cyan}FINALLY${reset}: ${final.length}`);
       fs.writeFileSync(
         "./versions.json",
-        JSON.stringify(content),
+        JSON.stringify(final),
         "utf8",
         (err) => {
           if (err) {
@@ -95,9 +124,9 @@ const getBitVer = () => {
 };
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 getBitVer();
