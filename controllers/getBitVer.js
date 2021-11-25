@@ -1,8 +1,7 @@
 "use strict";
 const cp = require("child_process");
 const fs = require("fs");
-const { version } = require("process");
-
+const storage = require('node-persist');
 const reset = "\x1b[0m";
 const cyan = "\x1b[36m";
 
@@ -11,9 +10,12 @@ const cyan = "\x1b[36m";
  *        bitcoin core binary releases from bitcoincore.org and Write found versions to database.
  * 
  *        Compare versions to btc-core thats installed to found versions.
- *  @TODO Map though versions.json to determine most recent version.
- *  
- *  @TODO create new `curl` target url for downloading binary pkgs for updates.
+ *  @todo: Map though versions.json to determine most recent version.
+ *  @todo: return last few versions.
+ *  @todo: create new `curl` target url for downloading binary pkgs for updates.
+ * 
+ * https://bitcoincore.org/bin/
+ * https://bitcoin.org/bin/
  * 
  */
 
@@ -21,9 +23,12 @@ const getBitVer = () => {
   const regeex = ".......-....-d.d.d";
   //.......\-....\-\(\d\+\.\)\?\(\d+\.\)\?\(\*|\d\+\)$
   try {
+      // Use sys commands to GET by `curl` current Bitcoin Core 
+      // versions avail for download. 
     const curl = cp.spawn("curl", ["https://bitcoincore.org/bin/"], {
       encoding: "utf-8",
     });
+    // Piping of `curl` response to `grep` to seach for keyword 'bitcoin-core'
     const grep = cp.spawn("grep", ["bitcoin-core"], { encoding: "utf-8" });
 
     //  Pipe curl data to grep.
@@ -32,8 +37,7 @@ const getBitVer = () => {
     //  outputs to terminal
     //  grep.stdout.pipe(process.stdin);
 
-    //   bug, function is receiving pkg details data from `curl`,
-    //   which is non-erring data.
+    // curl ERRORS
     curl.stderr.on("data", (err) => {
       console.log(
         "STDERRRR1:=>",
@@ -42,23 +46,33 @@ const getBitVer = () => {
       );
     });
 
-    // grep err
+    // grep ERRORS
     grep.stderr.on("data", (data) => {
       console.log("STDERRRR2:=>", data, "\n GREP ERROR");
     });
 
     let buffer = "";
     grep.stdout.on("data", (data) => {
+      // take care of empty strings.
       buffer += data;
       const isoString = buffer.split("\n");
-
       let versions = "";
-      isoString.map((item) => {
-        console.log(`${cyan}Found versions:${reset}`, item.slice(9, 28));
+      const final = []
+      isoString.map((item, i) => {
+        const version = {
+          ver: null
+        }
+       // console.log(`${cyan}Found versions:${reset}`, item.slice(9, 28));
+       version.ver = item.slice(9, 28) + ",";
         versions += item.slice(9, 28) + ",";
+        final.push(version)
       });
       const content = versions.split(",");
-      const currVer = console.log(versions.split(","));
+    for (let i = final.length; i--;) {
+      console.log('this', final[i])
+    }
+   
+     console.log(`${cyan}FINALLY${reset}: ${final.length}` )
       fs.writeFileSync(
         "./versions.json",
         JSON.stringify(content),
@@ -80,6 +94,11 @@ const getBitVer = () => {
   }
 };
 
+/**
+ * 
+ * 
+ * 
+ */
 
 getBitVer();
 // module.exports = {getBitVer}
