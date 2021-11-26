@@ -36,6 +36,7 @@ const getBitVer = () => {
 
     // curl ERRORS
     curl.stderr.on("data", (data) => {
+      /** @BUG Why  */
       console.log(
         "STDERRRR1:=>",
         data.toString(),
@@ -51,53 +52,38 @@ const getBitVer = () => {
     let buffer = "";
 
     grep.stdout.on("data", (data) => {
-      // take care of empty strings.
+      /** @TODO take care of empty strings (edge case). */ 
       buffer += data;
       const isoString = buffer.split("\n");
-      //   let versions = "";
       const final = [];
 
       isoString.map((item, i) => {
         const version = {
           ver: "",
         };
-
-     
-
         if (item.slice(28, 29) === ".") {
-          console.log("what is going on? .", item.slice(9, 30) + "/");
           version.ver = item.slice(9, 30) + "/";
-
           return final.push(version);
         }
- 
         if (item.slice(28, 29) === '"') {
-          console.log("what is going on? \"", item.slice(9, 27));
           version.ver = item.slice(9, 27) + "/";
           return final.push(version);
         }
-
         if (item.slice(28, 29) === ">") {
-          console.log("what is going on? >", item.slice(9, 26));
           version.ver = item.slice(9, 26) + "/";
           return final.push(version);
         }
+        if (item.slice(9, 26)  === "") {
+          return 
+        }
         version.ver = item.slice(9, 29);
         final.push(version);
-
-        // else {
-        //   version.ver = item.slice(9, 29);
-        //   final.push(version);
-        // }
-
-        // versions += item.slice(9, 28) + ",";
-        // final.push(version);
       });
 
-      // const content = versions.split(",");
+
 
       for (let i = final.length; i--; ) {
-        console.log("this", final[i]);
+        console.log("Bitcoin Core Versions:", final[i]);
       }
 
       console.log(`${cyan}FINALLY${reset}: ${final.length}`);
