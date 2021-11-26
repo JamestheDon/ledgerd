@@ -73,6 +73,9 @@ const getBitVer = () => {
           version.ver = item.slice(9, 26) + "/";
           return final.push(version);
         }
+        if (item.slice(9, 26)  === "") {
+          return 
+        }
         version.ver = item.slice(9, 29);
         final.push(version);
       });
