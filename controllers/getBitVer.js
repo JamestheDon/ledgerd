@@ -35,10 +35,10 @@ const getBitVer = () => {
     //  grep.stdout.pipe(process.stdin);
 
     // curl ERRORS
-    curl.stderr.on("data", (err) => {
+    curl.stderr.on("data", (data) => {
       console.log(
         "STDERRRR1:=>",
-        err.toString(),
+        data.toString(),
         "Is the `curl` cmd installed?"
       );
     });
@@ -56,35 +56,34 @@ const getBitVer = () => {
       const isoString = buffer.split("\n");
       //   let versions = "";
       const final = [];
+
       isoString.map((item, i) => {
         const version = {
           ver: "",
         };
 
-        if (item.slice(28, 29) === ".") {
-      version.ver = item.slice(9, 28);
-         final.push(version)
-        } 
-         
+     
 
+        if (item.slice(28, 29) === ".") {
+          console.log("what is going on? .", item.slice(9, 30) + "/");
+          version.ver = item.slice(9, 30) + "/";
+
+          return final.push(version);
+        }
+ 
         if (item.slice(28, 29) === '"') {
-          console.log('what is going on?', item.slice(9, 27))
-         version.ver = item.slice(9, 27);
-         final.push(version)
-        } 
-        // else {
-        //   final.push(version);
-        // }
+          console.log("what is going on? \"", item.slice(9, 27));
+          version.ver = item.slice(9, 27) + "/";
+          return final.push(version);
+        }
 
         if (item.slice(28, 29) === ">") {
-         version.ver = item.slice(9, 26);
-          final.push(version)
-        } 
-        
-        if (final.length <= 4) {
-          version.ver = item.slice(9, 28);
-          final.push(version)
+          console.log("what is going on? >", item.slice(9, 26));
+          version.ver = item.slice(9, 26) + "/";
+          return final.push(version);
         }
+        version.ver = item.slice(9, 29);
+        final.push(version);
 
         // else {
         //   version.ver = item.slice(9, 29);
