@@ -62,15 +62,15 @@ const getBitVer = () => {
           ver: "",
         };
         if (item.slice(28, 29) === ".") {
-          version.ver = item.slice(9, 30) + "/";
+          version.ver = item.slice(9, 31);
           return final.push(version);
         }
         if (item.slice(28, 29) === '"') {
-          version.ver = item.slice(9, 27) + "/";
+          version.ver = item.slice(9, 28) ;
           return final.push(version);
         }
         if (item.slice(28, 29) === ">") {
-          version.ver = item.slice(9, 26) + "/";
+          version.ver = item.slice(9, 27) ;
           return final.push(version);
         }
         if (item.slice(9, 26)  === "") {
