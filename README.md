@@ -7,11 +7,11 @@ Ledgerd is a human readable cli interface for bitcoin nodes.
 A collection of programs and scripts designed to help bitcoin developers and node operators.
 
 ```javascript
-//                  /)      /)              /)
-//                 //  _  _(/ _    _  __  _(/
-//                (/__(/_(_(_(_/__(/_/ (_(_(_
-//                          .-/
-//                         (_/
+//                       /)      /)              /)
+//                      //  _  _(/ _    _  __  _(/
+//                     (/__(/_(_(_(_/__(/_/ (_(_(_
+//                               .-/
+//                              (_/
 ```
 
 <p align="center">
@@ -19,12 +19,12 @@ A collection of programs and scripts designed to help bitcoin developers and nod
     <img src="https://img.shields.io/badge/build-0.2.0-purple.svg?longCache=true" alt="Branch">
   </a>
 </p>
-<hr>
+
 
 ## Heads up!
 
 ### Bitcoin Core nodes are safest to use as "hot wallets" storing small amouts of btc for short amounts of time.
-<hr>
+
 
 ## Current Support
 
@@ -53,7 +53,7 @@ $ node index.js
 
 ## Scripts:
 
-- [ x ] `scripts/coreVersions.js`: curl available bin/pkgs for bitcoin-core and write to file `versions.json`.
+- [x] `scripts/coreVersions.js`: curl available bin/pkgs for bitcoin-core and write to file `versions.json`.
 - [ ] `scripts/coreInit.js`: build all important urls and env details.
 - [ ] create configuration files, run a health check, include uptime...
 - [x] `scripts/operations` {analyze}: tailing the debug.log and grep for progress status, shutdown info, errors.
