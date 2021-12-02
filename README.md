@@ -28,7 +28,8 @@ A collection of programs and scripts designed to help bitcoin developers and nod
 
 ## Current Support
 
-Mac os
+Darwin (Mac)
+Linux
 
 ## Bitcoin Core Sources
 - https://bitcoincore.org/bin/
@@ -55,6 +56,9 @@ $ node index.js
 
 - [x] `scripts/coreVersions.js`: curl available bin/pkgs for bitcoin-core and write to file `versions.json`.
 - [ ] `scripts/coreInit.js`: build all important urls and env details.
+- [ ] `scripts/coreInit.js`: Auth implementation.
+- [ ] `scripts/coreInit.js`: bitcoin.conf creation.
+- [x] `utils/auth.js`
 - [ ] create configuration files, run a health check, include uptime...
 - [x] `scripts/operations` {analyze}: tailing the debug.log and grep for progress status, shutdown info, errors.
 ### Get bitcoin-core binary files

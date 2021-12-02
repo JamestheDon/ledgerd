@@ -4,7 +4,7 @@ import { randomBytes, createHmac } from 'crypto';
 
 
 // Create size byte hex salt
-function genSalt(size = 16) {
+export const genSalt = (size = 16) => {
   const buffer = randomBytes(size);
   return buffer.toString('hex');
 }

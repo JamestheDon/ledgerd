@@ -12,7 +12,7 @@
  import { stat, writeFile, mkdir } from "fs";
  import { homedir, platform } from "os";
  import { spawn, exec } from "child_process";
- import { genRpcAuthStr } from "../utils/auth.js";
+ import { genRpcAuthStr, genSalt } from "../utils/auth.js";
  /**
   * @Name coreInit , "bitcoin core initiate"
   * @SPEC Single production node.
@@ -53,7 +53,9 @@
  Node.prototype = {
    auth: function () {
  const auth = genRpcAuthStr('turtle', 'thisisnotapassword')
- console.log('heeeerrrr', auth)
+ const salt = genSalt()
+ console.log('SAlt', salt)
+ console.log('AUTH', auth)
    },
  
    init: function () {

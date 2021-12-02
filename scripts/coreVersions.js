@@ -5,7 +5,7 @@
  *  @todo: Map though versions.json to determine most recent version.
  *  @todo: return last few versions.
  *  @todo: create new `curl` target url for downloading binary pkgs for updates.
- *
+ * @todo Check bitcoin-core binary index for new bitcoin-core versions.
  * https://bitcoincore.org/bin/
  * https://bitcoin.org/bin/
  *
@@ -17,9 +17,9 @@ const reset = "\x1b[0m";
 const cyan = "\x1b[36m";
 
 const getCoreVersions = () => { 
-  // const regeex = ".......-....-d.d.d";
-  //.......\-....\-\(\d\+\.\)\?\(\d+\.\)\?\(\*|\d\+\)$
-  
+    // const regeex = ".......-....-d.d.d";
+    //.......\-....\-\(\d\+\.\)\?\(\d+\.\)\?\(\*|\d\+\)$
+    // read versions.json file into scope, compaire old = new for different versions.
     // curl Bitcoin COre versions avail for download.
     // --silent option stops curl.stderr from receiving the curl progess data.
     const curl = cp.spawn(
