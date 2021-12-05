@@ -11,22 +11,27 @@ const userAuth = () => {
   const auth = [];
   let exe = false;
   if (auth.length <= 0) {
-    console.log("imput");
+    // console.log("imput");
     process.stdin.on("data", (data) => {
       const user = data.trim();
       auth.push(user);
-      console.log("user pushed");
-      if (auth.length <= 2) {
+      //  console.log("user pushed");
+     
+      if (auth.length <= 1) {
+       
         process.stdout.write(`\n Password? \n > `);
         process.stdin.on("data", (data) => {
           return auth.push(data.trim());
         });
-        console.log("\n herer", auth);
-        if (auth.length === 2){
-            process.stdin.pause()
-        }
+        //  console.log("\n herer", auth);
       }
-
+      if (auth.length === 2) {
+          console.log(auth,'closing...')
+        return process.stdin.pause();
+      }
+      //   if (auth.length === 2){
+      //     process.stdin.pause()
+      // }
     });
   }
 
