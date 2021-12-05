@@ -12,7 +12,7 @@
  import { stat, writeFile, mkdir } from "fs";
  import { homedir, platform } from "os";
  import { spawn, exec } from "child_process";
- import { genRpcAuthStr, genSalt } from "../utils/auth.js";
+ import { genRpcAuthStr } from "../utils/auth.js";
  /**
   * @Name coreInit , "bitcoin core initiate"
   * @SPEC Single production node.
@@ -21,7 +21,8 @@
   */
  
  // todo: Promot in a cli for user options. auth
- 
+ const myArgs = process.argv.slice(2);
+
  const pkgName = "ledgerd"; // Directory to build network in.
  const ip = "127.0.0.1:";
  
@@ -34,27 +35,20 @@
  // 4 ports needed? bitcoind & lnd
  const ports = [];
  const startPort = [8333]; // startPort 8333 is where the port generation starts from.
+
+
  
- const Node = function (x) {
+ const Node = function (opts) {
    if (!(this instanceof Node)) return new Node(x);
    // a node needs a database, whats the url?
-   if (env === "darwin") {
-     const macBaseDir = "/Library/Application Support/Bitcoin/";
-     const uri = home + macBaseDir;
-     this.init();
-   }
-   if (env === "linux") {
-     const linuxBaseDir = "/.bitcoin/";
-     const uri = home + linuxBaseDir;
-     this.init();
-   }
+  
  };
  
  Node.prototype = {
    auth: function () {
  const auth = genRpcAuthStr('turtle', 'thisisnotapassword')
- const salt = genSalt()
- console.log('SAlt', salt)
+
+
  console.log('AUTH', auth)
    },
  
@@ -64,6 +58,18 @@
      // if started already then -> this
    },
  };
+
+ if (env === "darwin") {
+    const macBaseDir = "/Library/Application Support/Bitcoin/";
+    const uri = home + macBaseDir;
+    Node.prototype.init()
+  }
+  if (env === "linux") {
+    const linuxBaseDir = "/.bitcoin/";
+    const uri = home + linuxBaseDir;
+    this.init();
+  }
+
  const opts = { user: "first", password: "here" };
- const node0 = Node(opts);
-  node0.auth();
+ //const node0 = Node(opts);
+  //node0.auth();
