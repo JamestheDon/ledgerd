@@ -1,53 +1,28 @@
 import { genRpcAuthStr } from "../utils/auth.js";
-
-const userAuth = () => {
-  //  return new Promise((resolve, reject) => {
-  process.stdout.write(
-    `\n Time to create rpc credintials...\n Input a username. \n > `
-  );
-  process.stdin.resume();
-  process.stdin.setEncoding("utf-8");
-
-  const auth = [];
-  let exe = false;
-  if (auth.length <= 0) {
-    // console.log("imput");
-    process.stdin.on("data", (data) => {
-      const user = data.trim();
-      auth.push(user);
-      //  console.log("user pushed");
-     
-      if (auth.length <= 1) {
-       
-        process.stdout.write(`\n Password? \n > `);
-        process.stdin.on("data", (data) => {
-          return auth.push(data.trim());
-        });
-        //  console.log("\n herer", auth);
-      }
-      if (auth.length === 2) {
-          console.log(auth,'closing...')
-        return process.stdin.pause();
-      }
-      //   if (auth.length === 2){
-      //     process.stdin.pause()
-      // }
-    });
-  }
-
-  // if (auth != [] && auth.length <= 1)
-  //   if (exe === true) {
-
-  //   }
-
-  return auth;
-  //  })
-};
-//   switch (data) {
-//       case '':
-//           break;
-//       case '':
-//           break;
-//   }
-
-userAuth();
+/**
+ *  @returns array of of length of 2 with a username & password strings.
+ */
+ const questions = ["Username?", "Password?"];
+ const auth = [];
+ 
+ const ask = (i) => {
+   process.stdout.write(`\n\n${questions[i]} >`);
+ }
+ 
+ process.stdin.on("data", (data) => {
+   auth.push(data.toString().trim());
+   if (auth.length < questions.length) {
+     ask(auth.length);
+   } else {
+     process.exit();
+   }
+ });
+ 
+ process.on("exit", function () {
+ //   process.stdout.write(
+ //     `\n\n${auth[1]}${auth[0]}, ${auth[2]}\n\n`
+ //   );
+ 
+ });
+ ask(0);
+ 
