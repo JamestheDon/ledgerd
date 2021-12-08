@@ -2,7 +2,7 @@
  *  @spec This module provides a node operation interface.
  * 
  */
-const {nodeExists, start, stop, analyze} = require('../controllers/operations.js')
+const {nodeExists, start, stop, analyze} = require('../scripts/operations.js')
 
  // Terminal Coloring 
  const green = '\x1b[32m'

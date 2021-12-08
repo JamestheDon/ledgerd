@@ -13,7 +13,7 @@ import { stat, writeFile, mkdir } from "fs";
 import { homedir, platform } from "os";
 import { spawn, exec } from "child_process";
 import { genRpcAuthStr } from "../utils/auth.js";
-import  {authInterface} from "../interface/auth.js";
+import  { rpcAuth} from "../interface/auth.js";
 /**
  * @Name coreInit , "bitcoin core initiate"
  * @SPEC Single production node.
@@ -43,16 +43,20 @@ const Node = function (opts) {
 };
 
 Node.prototype = {
-  auth:  function () {
-    console.log("auth:");
-   authInterface().then((res) => {console.log('prototype.auth', res)})
-  
+  auth: async function()  {
+    console.log("RPC auth:", rpcAuth);
+    // const val =  await authInterface().then((res) => {
+    //     console.log('prototype.auth', res)
+    //     return res
+    // })
+    // console.log('values:', val)
+
 
   },
 
-  init: function () {
+  init: function()   {
     console.log("init:");
-    this.auth()
+   this.auth()
     // What needs to be done so a node can start.
     // if started already then -> this
   },
@@ -66,7 +70,7 @@ if (env === "darwin") {
 if (env === "linux") {
   const linuxBaseDir = "/.bitcoin/";
   const uri = home + linuxBaseDir;
-  this.init();
+  Node.prototype.init();
 }
 
 const opts = { user: "first", password: "here" };
