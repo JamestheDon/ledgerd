@@ -5,10 +5,10 @@ import { genRpcAuthStr } from "../utils/auth.js";
  const authInterface = () => {
   return new Promise((resolve, reject) => {
     const auth = [];
-    const questions = ["Username?", "Password?"];
-
+    const questions = ["Input a username:", "Input a Password:"];
+  //  process.stdout.write('\n\nInput a username:');
     const ask = (i) => {
-      process.stdout.write(`\n\n${questions[i]} > `);
+      process.stdout.write(`\n\n${questions[i]}`);
     };
 
     process.stdin.on("data", (data) => {
@@ -27,9 +27,12 @@ import { genRpcAuthStr } from "../utils/auth.js";
 };
 
 export const rpcAuth = await authInterface().then((res) => {
-  console.log("prototype.auth", res);
+// dont pass passwords in plain text form.
+ // console.log("prototype.auth", res);
   // todo1: normalize input values here.
   const val = genRpcAuthStr(res[0], res[1])
   return val;
+}).catch((err) => {
+    console.log('Authentication failed', err)
 });
 //console.log("values:", rpcAuth);

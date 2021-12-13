@@ -2,18 +2,18 @@
  * @spec examine env looking for btc core files & data & capabilities
  *
  *  @Q Details to know about the system useful to for node operators.
- *  how much space avail?
- *  what platform?
+ *      how much space avail?
+ *      what platform?
  *
  *  BONUS: How "clean" is the env?
  *          Having the peace of mind knowing that some basic explotis are accounted for.
+ *          what are some basic exploits/concerns.
  */
 
 import { stat, writeFile, mkdir } from "fs";
 import { homedir, platform } from "os";
 import { spawn, exec } from "child_process";
-import { genRpcAuthStr } from "../utils/auth.js";
-import  { rpcAuth} from "../interface/auth.js";
+//import * as versions from "../scripts/versions.json";
 /**
  * @Name coreInit , "bitcoin core initiate"
  * @SPEC Single production node.
@@ -31,48 +31,128 @@ const windows = "UsersYourUserNameAppdataRoamingBitcoin"; // (Vista and 7)
 
 const env = platform();
 const home = homedir();
-const paths = [];
 
 // 4 ports needed? bitcoind & lnd
 const ports = [];
 const startPort = [8333]; // startPort 8333 is where the port generation starts from.
 
 const Node = function (opts) {
-  if (!(this instanceof Node)) return new Node(x);
+  if (!(this instanceof Node)) return new Node(opts);
   // a node needs a database, whats the url?
+  this.uri = this.checkEnv();
+  this.port = 8333;
+  this.rpcPort = 8334;
 };
 
 Node.prototype = {
-  auth: async function()  {
-    console.log("RPC auth:", rpcAuth);
-    // const val =  await authInterface().then((res) => {
-    //     console.log('prototype.auth', res)
-    //     return res
-    // })
-    // console.log('values:', val)
-
-
+  checkEnv: function () {
+    if (env === "darwin") {
+      const macDefaultUrl = "/Library/Application Support/Bitcoin/";
+      const uri = home + macDefaultUrl;
+      this.uri = uri;
+      return uri;
+      //  Node.prototype.init(uri);
+    }
+    if (env === "linux") {
+      const linuxDefaultUrl = "/.bitcoin/";
+      const uri = home + linuxDefaultUrl;
+      return uri;
+      //  Node.prototype.init(env, home);
+    }
   },
 
-  init: function()   {
-    console.log("init:");
-   this.auth()
-    // What needs to be done so a node can start.
-    // if started already then -> this
+  latestVer: async function () {
+    // JSON modules are experimental.
+    // $"node --experimental-json-modules coreInit.js"
+    // todo: send to a wget function for download.
+    const data = await import("../scripts/versions.json");
+    const latestVersion = data.default.length - 1;
+    const ver = data.default[latestVersion];
+    return ver.ver;
+  },
+
+  ensureDir: function (uri) {
+    return new Promise((resolve, reject) => {
+      let result = { uri: uri };
+
+      //changed from depreciated fs.exists()
+      stat(uri, (err, stats) => {
+        if (stats) {
+          return resolve([true, "Dir exists!"]);
+        } else {
+          //create parent & child dir
+          mkdir(uri, { recursive: true }, (err) => {
+            if (err) {
+              return reject(err);
+            }
+            console.log("created " + uri);
+            resolve([true, "Dir created!"]);
+          });
+        }
+      });
+    });
+  },
+  rpcAuth: async function () {
+    // minimise async functions.
+    const { rpcAuth } = await import("../interface/auth.js");
+    return rpcAuth;
+    // if
+  },
+
+  genParamaters: function() {
+        const port = 0
+        const rpcPort = 0
+  },
+
+  genConf: function (auth) {
+    // cookie handling?
+    //  -rpccookiefile.
+    const conf = `
+          regtest=1
+          debug=rpc
+          server=1
+          ${auth}
+          datadir=${this.uri}
+          [regtest]
+          bind=127.0.0.1:${this.port}
+          rpcport=${this.rpcPort}
+          port=${this.port}
+  
+          `;
+    console.log("conf file:", conf);
+    // writeFile("path", conf, (err) => {
+    //   if (err) console.log(err);
+    //   console.log("bitcoin.conf:", true);
+    // });
+  },
+
+  init: function () {
+    console.log("initing:");
+      // gen rpc auth string
+      this.rpcAuth().then((res) => {
+        // config needs db & port numbers paramaters.
+      this.genConf(res);
+     
+    });
+    // check env
+    const db = this.uri;
+    console.log("uri here::", db);
+     this.latestVer().then((res) => {
+        console.log("latest core version::", res);
+    });
+
+    this.ensureDir(db).then((res) => {
+      console.log("directory state::", res);
+      if (res[0] === true) {
+        console.log("made it!!", res);
+      }
+    });
+
+    // this.rpcAuth();
   },
 };
 
-if (env === "darwin") {
-  const macBaseDir = "/Library/Application Support/Bitcoin/";
-  const uri = home + macBaseDir;
-  Node.prototype.init();
-}
-if (env === "linux") {
-  const linuxBaseDir = "/.bitcoin/";
-  const uri = home + linuxBaseDir;
-  Node.prototype.init();
-}
+const opts = {};
+const node0 = Node(opts);
 
-const opts = { user: "first", password: "here" };
-//const node0 = Node(opts);
-//node0.auth();
+node0.init();

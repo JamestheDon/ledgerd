@@ -4,7 +4,7 @@ import { randomBytes, createHmac } from 'crypto';
 
 
 // Create size byte hex salt
-export const genSalt = (size = 16) => {
+ const genSalt = (size = 16) => {
   const buffer = randomBytes(size);
   return buffer.toString('hex');
 }
@@ -26,7 +26,7 @@ function genHash(password, salt) {
   return hash;
 }
 
-export const genRpcAuth = (username = genUser(), password = genPass(), salt = genSalt()) => {
+ const genRpcAuth = (username = genUser(), password = genPass(), salt = genSalt()) => {
   const hash = genHash(password, salt);
   return { username, password, salt, hash };
 }
