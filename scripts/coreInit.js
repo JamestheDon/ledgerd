@@ -61,16 +61,6 @@ Node.prototype = {
     }
   },
 
-  latestVer: async function () {
-    // JSON modules are experimental.
-    // $"node --experimental-json-modules coreInit.js"
-    // todo: send to a wget function for download.
-    const data = await import("../scripts/versions.json");
-    const latestVersion = data.default.length - 1;
-    const ver = data.default[latestVersion];
-    return ver.ver;
-  },
-
   ensureDir: function (uri) {
     return new Promise((resolve, reject) => {
       let result = { uri: uri };
@@ -99,12 +89,26 @@ Node.prototype = {
     // if
   },
 
-  genParamaters: function() {
-        const port = 0
-        const rpcPort = 0
+  genParamaters: function () {
+    const port = 0;
+    const rpcPort = 0;
+  },
+  checkConf: function() {
+    stat(this.uri + 'bitcoin.conf', (err, stats) => {
+        if (stats) {
+         console.log([true, "Config already exists!"]);
+         // check current conf to new conf; 
+         // update if needed.
+        } else {
+            if (err) {
+                console.log('errors',err)
+            }
+        }
+      });
   },
 
   genConf: function (auth) {
+    this.checkConf()
     // cookie handling?
     //  -rpccookiefile.
     const conf = `
@@ -128,20 +132,15 @@ Node.prototype = {
 
   init: function () {
     console.log("initing:");
-      // gen rpc auth string
-      this.rpcAuth().then((res) => {
-        // config needs db & port numbers paramaters.
+    // gen rpc auth string
+    this.rpcAuth().then((res) => {
+      // config needs db & port numbers paramaters.
       this.genConf(res);
-     
-    });
-    // check env
-    const db = this.uri;
-    console.log("uri here::", db);
-     this.latestVer().then((res) => {
-        console.log("latest core version::", res);
     });
 
-    this.ensureDir(db).then((res) => {
+    console.log("uri here::", this.uri);
+
+    this.ensureDir(this.uri).then((res) => {
       console.log("directory state::", res);
       if (res[0] === true) {
         console.log("made it!!", res);
@@ -152,7 +151,7 @@ Node.prototype = {
   },
 };
 
-const opts = {};
+const opts = { port: 8333, rpcPort: 8334 };
 const node0 = Node(opts);
 
 node0.init();
