@@ -39,7 +39,9 @@ const startPort = [8333]; // startPort 8333 is where the port generation starts 
 const Node = function (opts) {
   if (!(this instanceof Node)) return new Node(opts);
   // a node needs a database, whats the url?
+  this.pkg = "ledgerd/";
   this.uri = this.checkEnv();
+  this.auth = "";
   this.port = 8333;
   this.rpcPort = 8334;
 };
@@ -48,7 +50,7 @@ Node.prototype = {
   checkEnv: function () {
     if (env === "darwin") {
       const macDefaultUrl = "/Library/Application Support/Bitcoin/";
-      const uri = home + macDefaultUrl;
+      const uri = home + macDefaultUrl + this.pkg;
       this.uri = uri;
       return uri;
       //  Node.prototype.init(uri);
@@ -93,59 +95,62 @@ Node.prototype = {
     const port = 0;
     const rpcPort = 0;
   },
-  checkConf: function() {
-    stat(this.uri + 'bitcoin.conf', (err, stats) => {
-        if (stats) {
-         console.log([true, "Config already exists!"]);
-         // check current conf to new conf; 
-         // update if needed.
-        } else {
-            if (err) {
-                console.log('errors',err)
-            }
-        }
-      });
-  },
 
   genConf: function (auth) {
-    this.checkConf()
     // cookie handling?
     //  -rpccookiefile.
-    const conf = `
-          regtest=1
-          debug=rpc
-          server=1
-          ${auth}
-          datadir=${this.uri}
-          [regtest]
-          bind=127.0.0.1:${this.port}
-          rpcport=${this.rpcPort}
-          port=${this.port}
-  
-          `;
-    console.log("conf file:", conf);
-    // writeFile("path", conf, (err) => {
-    //   if (err) console.log(err);
-    //   console.log("bitcoin.conf:", true);
-    // });
+    stat(this.uri + "bitcoin.conf", (err, stats) => {
+      if (stats) {
+        console.log([true, "Config already exists!"]);
+        // check current conf to new conf;
+        // update if needed.
+        return;
+      } else {
+        // What shouldnt be overwritten?
+        const conf = `
+        regtest=1
+        debug=rpc
+        server=1
+        ${auth}
+        datadir=${this.uri}
+        [regtest]
+        bind=127.0.0.1:${this.port}
+        rpcport=${this.rpcPort}
+        port=${this.port}
+    
+        `;
+
+        if (err.errno === -2) {
+            console.log("No .conf file found; \nCreating now::");
+            writeFile(this.uri + "bitcoin.conf", conf, (err) => {
+                if (err) console.log(err);
+                console.log("bitcoin.conf:", true);
+              });
+          }
+      
+     
+      }
+    });
   },
 
   init: function () {
     console.log("initing:");
     // gen rpc auth string
+    this.ensureDir(this.uri).then((res) => {
+      console.log("directory state::", res);
+      if (res[0] === true) {
+      }
+    });
     this.rpcAuth().then((res) => {
       // config needs db & port numbers paramaters.
       this.genConf(res);
     });
+    // this.rpcAuth().then((res) => {
+    //   // config needs db & port numbers paramaters.
+    //   this.genConf(res);
+    // });
 
     console.log("uri here::", this.uri);
-
-    this.ensureDir(this.uri).then((res) => {
-      console.log("directory state::", res);
-      if (res[0] === true) {
-        console.log("made it!!", res);
-      }
-    });
 
     // this.rpcAuth();
   },
