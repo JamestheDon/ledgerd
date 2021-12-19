@@ -2,6 +2,7 @@
 
 Ledgerd is a human readable cli interface for bitcoin nodes. 
 
+
 ## What is Ledgerd?
  ### "Building on Bitcoin"
 A collection of programs and scripts designed to help bitcoin developers and node operators.
@@ -55,11 +56,10 @@ $ node index.js
 ## Scripts:
 
 - [x] `scripts/coreVersions.js`: curl available bin/pkgs for bitcoin-core and write to file `versions.json`.
-- [ ] `scripts/coreInit.js`: build all important urls and env details.
-- [ ] `scripts/coreInit.js`: Auth implementation.
-- [ ] `scripts/coreInit.js`: bitcoin.conf creation.
+- [x] `scripts/coreInit.js`: build all important urls and env details.
+- [x] `scripts/coreInit.js`: Auth implementation.
+- [x] `scripts/coreInit.js`: bitcoin.conf creation.
 - [x] `utils/auth.js`
-- [ ] create configuration files, run a health check, include uptime...
 - [x] `scripts/operations` {analyze}: tailing the debug.log and grep for progress status, shutdown info, errors.
 ### Get bitcoin-core binary files
 - [ ] download desired bitcoin version pkgs 
@@ -77,8 +77,13 @@ $ gpg --keyserver
 $ find SHASUMS.asc
 $ gpg --verify SHASUMS.asc
 ```
-
-## Program
-
-- [x] `interface/main.js`: Main user interface (cli navigation).
-- [ ] Login interface & script. (accept rpc passwords and usr name.) security?
+```javascript
+/**
+ *  BONUS: How "clean" is the env?
+ * 
+ *  Having the peace of mind knowing that 
+ *   some basic explotis are accounted for.
+ *   what are some basic exploits/concerns?
+ *   Dangerous ports open? 
+ */
+```

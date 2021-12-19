@@ -2,7 +2,8 @@
  *  @spec This module provides a node operation interface.
  * 
  */
-const {nodeExists, start, stop, analyze} = require('../scripts/operations.js')
+import {nodeExists, start, stop, analyze} from '../scripts/operations.js'
+import {Node} from '../scripts/coreInit.js'
 
  // Terminal Coloring 
  const green = '\x1b[32m'
@@ -54,7 +55,7 @@ const {nodeExists, start, stop, analyze} = require('../scripts/operations.js')
         })
     } 
     
-    const cmdPrompt = () => {
+    export const cmdPrompt = () => {
         userInput(exe).then((res) => {
             exe = true
             switch (res) {
@@ -147,7 +148,7 @@ const {nodeExists, start, stop, analyze} = require('../scripts/operations.js')
 const bitcoindInterface = () => {
     return new Promise((resolve, reject) => {
         process.stdout.write(`${cyan}Bitcoin Core Node Operations${reset}`)
-        process.stdout.write(`\n a) Start bitcoind \n b) Stop bitcoind \n c) Check for bitcoin-core update. \n d) Unlock Wallet. \n e) Main Menu \n`)
+        process.stdout.write(`\n a) Start bitcoind \n b) Stop bitcoind \n c) Init Bitcoin Core \n d) UNUSED \n e) Main Menu \n`)
         process.stdin.resume()
         process.stdin.setEncoding('utf-8')
         let buf = ''
@@ -181,7 +182,10 @@ const bitcoindController = () => {
             }) 
             break;
         case 'c':
-            console.log('Check for Bitcoin Core updates.')
+            console.log('Init Bitcoin Core.')
+            const node0 = new Node()
+            node0.init()
+            // run bitcoindController after success.
             break;
         case 'd':
             console.log('Unlock wallet.')
@@ -199,5 +203,3 @@ const bitcoindController = () => {
 
 }
 
- //   cmdPrompt()
-module.exports = {cmdPrompt}

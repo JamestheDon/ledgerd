@@ -1,6 +1,6 @@
-const cp = require('child_process');
-const fs = require('fs');
 
+
+import { spawn, exec, execSync } from "child_process";
 // const spawn = require('child_process').spawn;
 
 /**
@@ -26,10 +26,10 @@ const startNode = () => {
 // search for related bitcoind files.
 // - check for  default Bitcoin dirs.   
 // search for processes 'bitcoind'
-const nodeExists = () => {
+export const nodeExists = () => {
    
     try {
-        const config = cp.execSync('find ~/"Library/Application Support/Bitcoin" -name "bitcoin.conf"', {encoding: 'utf-8'})
+        const config = execSync('find ~/"Library/Application Support/Bitcoin" -name "bitcoin.conf"', {encoding: 'utf-8'})
         // FgGreen = "\x1b[32m"
         console.log("\x1b[32m", config);
         // decode string
@@ -56,10 +56,10 @@ const searchForPkg = () => {
 // returns a strings from debug.log
 // this function should be called after a bitcoin node is found on system.
 // add input param from a bitcoin dir search.
-const analyze = () => {
+export const analyze = () => {
             try {
-    tail = cp.spawn('tail',   ["-f", "/Volumes/Shell1/debug.log"], {encoding: 'utf-8', stdio: 'pipe'});
-    const grep = cp.spawn('grep', ["-m", "1",'progress='], );
+    tail = spawn('tail',   ["-f", "/Volumes/Shell1/debug.log"], {encoding: 'utf-8', stdio: 'pipe'});
+    const grep = spawn('grep', ["-m", "1",'progress='], );
     
     // errno: -32 "write EPIPE"
     // piping `tail` | `grep` is causing potential race conditions;
@@ -141,9 +141,9 @@ const analyze = () => {
 }
 
 // Start 
-const start = ( ) => {
+export const start = ( ) => {
     return new Promise((resolve, reject) => {
-        cp.exec('bitcoind -daemon', (err, stdout, stderr) => {
+        exec('bitcoind -daemon', (err, stdout, stderr) => {
             if (err) {
                 console.log('ERRRRR', err)
                
@@ -157,9 +157,9 @@ const start = ( ) => {
     })
 }
 
-const stop = ( ) => {
+export const stop = ( ) => {
     return new Promise((resolve, reject) => {
-            cp.exec('bitcoin-cli stop', (err, stdout, stderr) => {
+            exec('bitcoin-cli stop', (err, stdout, stderr) => {
                 if (err.code === 1) {
                     console.log('Start bitcoind first!')
                     resolve(true)
@@ -178,7 +178,7 @@ const stop = ( ) => {
 
 const bitcoind = () => {
     try {
-      const status = cp.execSync('bitcoind -daemon', {encoding: 'utf-8'})
+      const status = execSync('bitcoind -daemon', {encoding: 'utf-8'})
         console.log(typeof status, status);
     } catch (error) {
         if (error.status === 1) {
@@ -188,6 +188,6 @@ const bitcoind = () => {
     }
 }
 
-module.exports = {nodeExists, analyze, start, stop}
+// module.exports = {nodeExists, analyze, start, stop}
 
 

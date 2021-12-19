@@ -5,7 +5,7 @@
    *  
    */
 'use strick';
-const {cmdPrompt} = require('./interface/main.js')
+import {cmdPrompt} from './interface/main.js'
 
 
 

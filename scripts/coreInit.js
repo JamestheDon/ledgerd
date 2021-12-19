@@ -1,15 +1,7 @@
 /**
  * @spec examine env looking for btc core files & data & capabilities
  *
- *  @Q Details to know about the system useful to for node operators.
- *      how much space avail?
- *      what platform?
- *
- *  BONUS: How "clean" is the env?
- *          Having the peace of mind knowing that some basic explotis are accounted for.
- *          what are some basic exploits/concerns.
  */
-
 import { stat, writeFile, mkdir } from "fs";
 import { homedir, platform } from "os";
 import { spawn, exec } from "child_process";
@@ -36,7 +28,7 @@ const home = homedir();
 const ports = [];
 const startPort = [8333]; // startPort 8333 is where the port generation starts from.
 
-const Node = function (opts) {
+export const Node = function (opts) {
   if (!(this instanceof Node)) return new Node(opts);
   // a node needs a database, whats the url?
   this.pkg = "ledgerd/";
@@ -121,14 +113,12 @@ Node.prototype = {
         `;
 
         if (err.errno === -2) {
-            console.log("No .conf file found; \nCreating now::");
-            writeFile(this.uri + "bitcoin.conf", conf, (err) => {
-                if (err) console.log(err);
-                console.log("bitcoin.conf:", true);
-              });
-          }
-      
-     
+          console.log("No .conf file found; \nCreating now::");
+          writeFile(this.uri + "bitcoin.conf", conf, (err) => {
+            if (err) console.log(err);
+            console.log("bitcoin.conf:", true);
+          });
+        }
       }
     });
   },
@@ -157,6 +147,6 @@ Node.prototype = {
 };
 
 const opts = { port: 8333, rpcPort: 8334 };
-const node0 = Node(opts);
+// const node0 = Node(opts);
 
-node0.init();
+// node0.init();
